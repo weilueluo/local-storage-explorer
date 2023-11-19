@@ -1,4 +1,5 @@
 # Storage Helper
-> Status: waiting for chrome review...
-Easily view & copy from local storage
+> Status: waiting for Chrome review...
+
+Easily view & copy local storage content
 
