@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Storage Helper</title>
+  <link rel="stylesheet" href="./popup.css" />
+</head>
+
+<body>
+  <template id="li_template">
+    <li class="kv_li">
+      <div class="kv_div">
+        <span class="visibility"></span>
+        <span class="key">[Title]</span>
+        <span class="value">[Content]</span>
+        <span class="copied display_none">Copied!</span>
+      </div>
+    </li>
+  </template>
+
+  <div class="heading">
+    <div class="titleContainer">
+      <div class="title">
+        <img id="icon" src="../icons/icon32.png" />
+        <span id="title_text">Storage Helper</span>
+      </div>
+      <span>View and copy from local storage</span>
+    </div>
+    <div class="links">
+      <a href="https://github.com/weilueluo/storage-helper" target="_blank">Github</a>
+      <a href="https://github.com/weilueluo/storage-helper/issues/new" target="_blank">Feedback</a>
+      <a href="https://www.buymeacoffee.com/luoweilue" target="_blank">Buy me a coffee</a>
+    </div>
+  </div>
+
+  <div id="search_div">
+    <input type="text" id="search_input" placeholder="type anywhere to search..." />
+    <button id="search_button">Search</button>
+  </div>
+
+  <span id="empty_label" class="display_none"><i>empty</i></span>
+
+  <script src="./popup.js" type="module"></script>
+</body>
+
+</html>
