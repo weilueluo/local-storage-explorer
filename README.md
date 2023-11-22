@@ -1,6 +1,6 @@
-# Storage Helper
+# Local Storage Explorer
 > Status: waiting for Chrome review...
 
-Easily view & copy local storage content
+Easily view, copy or search local storage content from any webpage by clicking on the extension icon. It also supports automatically deserialize json string.
 
-<img src="./screenshot/Screenshot 2023-11-19 221058.png" />
+<img src="./screenshot/screenshot.png" />

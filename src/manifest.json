@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Storage Helper",
-    "description": "View and copy local storage content easily.",
+    "name": "Local Storage Explorer",
+    "description": "Easily view, copy or search local storage content from any webpage by clicking on the extension icon.",
     "version": "0.0.1",
     "icons": {
         "16": "icons/icon16.png",
@@ -11,12 +11,23 @@
     },
     "action": {
         "default_popup": "popup/popup.html",
-        "default_title": "Storage Helper"
+        "default_title": "Local Storage Explorer"
     },
-    "host_permissions": [
-        "<all_urls>"
-    ],
     "permissions": [
-        "scripting"
+        "activeTab",
+        "storage",
+        "tabs"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*",
+                "http://*/*"
+            ],
+            "js": [
+                "content/retrieve.js"
+            ],
+            "run_at": "document_start"
+        }
     ]
 }
