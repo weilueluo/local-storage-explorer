@@ -67,12 +67,16 @@ async function getMaxDepth() {
 // feat: search through local storage
 searchButton.onclick = async function () {
     searchButton.disabled = true
+    document.body.classList.add("loading")
     searchButton.classList.add("loading")
+
     const searchText = searchInput.value
     const parsed = parseRecursive(await getLocalStorageContent(), await getMaxDepth())
     const trimmed = trimNotContainInPlace(parsed, searchText)
     await refresh(trimmed)
+
     searchButton.classList.remove("loading")
+    document.body.classList.remove("loading")
     searchButton.disabled = false
 }
 
@@ -172,10 +176,16 @@ async function refresh(parsedNode) {
     const maxDepth = await getMaxDepth()
 
     if (parsedNode === null || parsedNode === undefined) {
-        parsedNode = parseRecursive(await getLocalStorageContent(), maxDepth)
+        parsedNode = parseRecursive({
+            "ROOT": await getLocalStorageContent()
+        }, maxDepth)
     }
 
     deleteHtmlContainerIn(document.body)
+
+    const lastUpdated = new Date()
+
+    insertStats(parsedNode, lastUpdated)
 
     const inserted = insertHtmlRecursive(parsedNode, document.body, maxDepth)
 
@@ -187,35 +197,51 @@ async function refresh(parsedNode) {
 }
 
 async function getLocalStorageContent() {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const response = await chrome.tabs.sendMessage(tab.id, { type: "retrieve" });
-    return response
+    // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    // const response = await chrome.tabs.sendMessage(tab.id, { type: "retrieve" });
+    // return response
+
+    // Get the current tab
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    const execution = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => ({ ...localStorage }),
+    })
+    return execution[0].result
 }
 
 function parseRecursive(raw, depth) {
 
     let is_object = false
+    let is_object_tag = false  // node maybe an object but not a object tag, because leaf node (max depth reached) always display full content, even if it is an object 
     let is_array = false
+    let is_array_tag = false   // similar to above
+    let is_string_tag = false
     let clipboard_value;
     let display_value;
     let js_value;
 
+
     if (isObject(raw)) {
         js_value = raw
         clipboard_value = JSON.stringify(raw)
-        display_value = "object"
+        display_value = "type object"
         is_object = true
+        is_object_tag = true
     } else if (isArray(raw)) {
         js_value = raw
         clipboard_value = JSON.stringify(raw)
-        display_value = "array"
+        display_value = "type array"
         is_array = true
+        is_array_tag = true
     } else if (isString(raw)) {
         try {
             // handle json string
             js_value = JSON.parse(raw)
             clipboard_value = String(raw)
-            display_value = "string"
+            display_value = "type string"
+            is_string_tag = true
             if (isObject(js_value)) {
                 is_object = true
             } else if (isArray(js_value)) {
@@ -237,17 +263,22 @@ function parseRecursive(raw, depth) {
         js_value = raw
     }
 
+    // set typical value
+
     const node = {
         js_value: js_value,  // string / object / array
         display_value: display_value,  // string / "object"  / "array"
         clipboard_value: clipboard_value,  // string
         is_leaf: true,
         is_object: is_object,
+        is_object_tag: is_object_tag,
         is_array: is_array,
-        children: {}  // key map to node
+        is_array_tag: is_array_tag,
+        is_string_tag: is_string_tag,
+        children: {},  // key map to node
     }
 
-    // console.log(`depth=${depth}, node=`, node)
+    // set is_leaf
     if (depth > 0) {
         if (node.is_object) {
             node.is_leaf = false
@@ -262,10 +293,25 @@ function parseRecursive(raw, depth) {
         }
     }
 
+    // for leaf node, always display content, not its type information
+    if (node.is_leaf) {
+        node.display_value = node.clipboard_value
+        node.is_array_tag = false
+        node.is_object_tag = false
+        node.is_string_tag = false
+    }
+
     return node;
 }
 
 // UI relate functions
+
+function insertStats(node, lastUpdated) {
+    const statsNode = document.querySelector("#stats")
+    if (statsNode) {
+        statsNode.innerHTML = `<b>Time</b> ${lastUpdated}<br/>`
+    }
+}
 
 function insertHtmlRecursive(node, parent, depth) {
     if (depth <= 0) {
@@ -274,10 +320,9 @@ function insertHtmlRecursive(node, parent, depth) {
     if (node === null || node === undefined) {
         return null;
     }
-
     if (Object.keys(node.children).length > 0) {
         const container = createHtmlContainerIn(parent)
-        parent.classList.add("nonleaf_ul")
+        parent.classList.add("nonleaf_li")
         for (const [key, child] of Object.entries(node.children)) {
             const htmlNode = createHtmlNode(key, child)
             container.insertAdjacentElement('beforeend', htmlNode)
@@ -307,18 +352,21 @@ function createHtmlNode(key, node) {
 
     const visibilityElement = nodeContainer.querySelector(".visibility");
     visibilityElement.onclick = async () => {
-        nodeContainer && nodeContainer.classList.toggle("hide_ul_children")
+        nodeContainer && nodeContainer.classList.toggle("hide_children")
     }
 
     const keyElement = nodeContainer.querySelector(".key");
     keyElement.textContent = key
     keyElement.onclick = async () => {
-        nodeContainer && nodeContainer.classList.toggle("hide_ul_children")
+        nodeContainer && nodeContainer.classList.toggle("hide_children")
     }
 
     const valueElement = nodeContainer.querySelector(".value")
     valueElement.textContent = node.display_value
     // valueElement.onclick = copyFunction
+
+    const childrenCountElement = nodeContainer.querySelector(".count_tag")
+    childrenCountElement.textContent = `size ${Object.keys(node.children).length}`
 
     const copyIconElement = nodeContainer.querySelector(".copy_icon")
     copyIconElement.onclick = copyFunction
@@ -337,13 +385,13 @@ function createHtmlNode(key, node) {
         valueElement.classList.toggle("trim")
     }
 
-    // if (node.is_object) {
-    //     valueElement.classList.add("object_tag")
-    // } else if (node.is_array) {
-    //     valueElement.classList.add("array_tag")
-    // } else {
-    //     valueElement.classList.add("leaf_tag")
-    // }
+    if (node.is_object_tag) {
+        valueElement.classList.add("object_tag")
+    } else if (node.is_array_tag) {
+        valueElement.classList.add("array_tag")
+    } else if (node.is_string_tag) {
+        valueElement.classList.add("string_tag")
+    }
 
     return nodeContainer;
 }

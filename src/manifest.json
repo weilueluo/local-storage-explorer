@@ -13,21 +13,14 @@
         "default_popup": "popup/popup.html",
         "default_title": "Local Storage Explorer"
     },
+    "host_permissions": [
+        "https://*/*",
+        "http://*/*"
+    ],
     "permissions": [
         "activeTab",
         "storage",
-        "tabs"
-    ],
-    "content_scripts": [
-        {
-            "matches": [
-                "https://*/*",
-                "http://*/*"
-            ],
-            "js": [
-                "content/retrieve.js"
-            ],
-            "run_at": "document_start"
-        }
+        "tabs",
+        "scripting"
     ]
 }

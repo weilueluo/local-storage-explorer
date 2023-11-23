@@ -99,7 +99,11 @@ body {
 }
 
 .key,
-.value {
+.value,
+.object_tag,
+.count_tag,
+.array_tag,
+.string_tag {
     font-size: var(--font-size);
     line-height: var(--font-size);
     font-family: monospace;
@@ -110,9 +114,11 @@ body {
 
     overflow: hidden;
 
-    padding: 2px 4px;
+    padding: 0px 4px;
     border: 0px solid transparent;
     border-radius: 3px;
+
+    align-self: center;
 }
 
 .key {
@@ -129,6 +135,15 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: var(--max-line-height);
     max-height: calc(var(--max-line-height) * var(--font-size));
+    
+    -webkit-box-pack: center
+}
+
+.object_tag,
+.count_tag,
+.array_tag,
+.string_tag {
+    background-color: #dfdfdf;
 }
 
 /* icons */
@@ -137,6 +152,7 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     align-content: start;
+    gap: 6px;
 }
 
 .copy_icon,
@@ -148,7 +164,9 @@ body {
     min-width: 16px;
     padding: 2px;
     border: 0px solid transparent;
-    border-radius: 3px;
+    border-radius: 5px;
+
+    /* background-color: #2bbda038; */
 }
 
 .copy_icon:hover,
@@ -180,8 +198,23 @@ body {
 
 .loading>.spinner {
     visibility: visible;
+    animation-name: rotate-indefinitely;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
 }
 
+@keyframes rotate-indefinitely {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* line gaps */
 .kv_ul,
 .kv_li {
     display: flex;
@@ -189,35 +222,45 @@ body {
     gap: 2px;
 }
 
-
+/* hover on any item to highlight its hierachy */
 .kv_li:hover>.kv_div>.key {
     background-color: #EDDBC7;
 }
 
-.nonleaf_ul:hover>.kv_div>.key:hover {
+/* hover to key element directly highlight */
+.nonleaf_li:hover>.kv_div>.key:hover {
     background-color: #d2a674;
     cursor: pointer;
 }
 
+/* tags stylings */
+
+
+/* show only non leaf node's children count as leaf node children count it is always zero */
+.nonleaf_li>.kv_div>.count_tag {
+    display: inline;
+}
+
+/* list indentation */
 ul {
     list-style: none;
     padding-left: 0;
 }
 
 li>ul {
-    list-style: none;
     padding-left: 20px;
 }
 
-.hide_ul_children>ul * {
+/* folding */
+.hide_children>ul>* {
     display: none;
 }
 
-.nonleaf_ul>.kv_div>.visibility {
+.visibility {
     position: relative;
 }
 
-.nonleaf_ul.hide_ul_children>.kv_div>.visibility::before {
+.nonleaf_li.hide_children>.kv_div>.visibility::before {
     content: "\2B9E";
     position: absolute;
     top: 50%;
@@ -225,7 +268,7 @@ li>ul {
     transform: translate(-50%, -50%);
 }
 
-.nonleaf_ul:not(.hide_ul_children)>.kv_div>.visibility::before {
+.nonleaf_li:not(.hide_children)>.kv_div>.visibility::before {
     content: "\2B9F";
     position: absolute;
     top: 50%;
@@ -233,7 +276,7 @@ li>ul {
     transform: translate(-50%, -50%);
 }
 
-
+/* copied element */
 .kv_div {
     position: relative;
 }
