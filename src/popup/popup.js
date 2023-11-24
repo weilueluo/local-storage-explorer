@@ -177,7 +177,7 @@ async function refresh(parsedNode) {
 
     if (parsedNode === null || parsedNode === undefined) {
         parsedNode = parseRecursive({
-            "ROOT": await getLocalStorageContent()
+            "LOCAL STORAGE": await getLocalStorageContent()
         }, maxDepth)
     }
 
