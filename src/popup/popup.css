@@ -5,6 +5,10 @@ body {
     overflow: scroll;
 }
 
+.heading {
+    font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+}
+
 /* Heading */
 
 #icon {
@@ -88,7 +92,9 @@ body {
 /* Content */
 
 :root {
-    --font-size: 0.9rem;
+    --font-size: 1rem;
+    /* slightly higher so that firefox do not trim off bottom of certain chars like g */
+    --line-height: 1.5rem;
     --max-line-height: 3;
 }
 
@@ -98,15 +104,29 @@ body {
     gap: 6px;
 }
 
+.value {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    font-weight: normal;
+}
+
+.key,
+.object_tag,
+.count_tag,
+.array_tag,
+.string_tag,
+#stats {
+    font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+}
+
 .key,
 .value,
 .object_tag,
 .count_tag,
 .array_tag,
-.string_tag {
+.string_tag,
+#stats {
     font-size: var(--font-size);
-    line-height: var(--font-size);
-    font-family: monospace;
+    line-height: var(--line-height);
 
     text-overflow: ellipsis;
     white-space: break-spaces;
@@ -119,6 +139,10 @@ body {
     border-radius: 3px;
 
     align-self: center;
+}
+
+#stats {
+    padding-left: 0
 }
 
 .key {
@@ -134,8 +158,8 @@ body {
     -webkit-box-orient: vertical;
     display: -webkit-box;
     -webkit-line-clamp: var(--max-line-height);
-    max-height: calc(var(--max-line-height) * var(--font-size));
-    
+    max-height: calc(var(--max-line-height) * var(--line-height));
+
     -webkit-box-pack: center
 }
 
@@ -144,6 +168,7 @@ body {
 .array_tag,
 .string_tag {
     background-color: #dfdfdf;
+    align-self: flex-start;
 }
 
 /* icons */

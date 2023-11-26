@@ -22,5 +22,10 @@
         "storage",
         "tabs",
         "scripting"
-    ]
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "localstorageexplorer@example.com"
+        }
+    }
 }

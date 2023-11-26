@@ -148,9 +148,9 @@ export function getAsNumber(anything) {
 }
 
 async function getSettings() {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
     const origin = new URL(tab.url).origin
-    const settings = await chrome.storage.sync.get(origin)
+    const settings = await browser.storage.sync.get(origin)
     // console.log(`getting settings:`, settings[origin])
     return (settings && settings[origin]) ? settings[origin] : {}
 }
@@ -163,11 +163,11 @@ async function saveSettings(settings) {
     if (!isObject(settings)) {
         throw new Error(`trying to save a non-object settings: ${settings}`)
     }
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
     const origin = new URL(tab.url).origin
     const toSave = {}
     toSave[origin] = settings
-    await chrome.storage.sync.set(toSave)
+    await browser.storage.sync.set(toSave)
 }
 
 // feat: on open extension popup, get local storage content and create tree
@@ -176,9 +176,7 @@ async function refresh(parsedNode) {
     const maxDepth = await getMaxDepth()
 
     if (parsedNode === null || parsedNode === undefined) {
-        parsedNode = parseRecursive({
-            "LOCAL STORAGE": await getLocalStorageContent()
-        }, maxDepth)
+        parsedNode = parseRecursive(await getLocalStorageContent(), maxDepth)
     }
 
     deleteHtmlContainerIn(document.body)
@@ -197,18 +195,18 @@ async function refresh(parsedNode) {
 }
 
 async function getLocalStorageContent() {
-    // const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    // const response = await chrome.tabs.sendMessage(tab.id, { type: "retrieve" });
+    // const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    // const response = await browser.tabs.sendMessage(tab.id, { type: "retrieve" });
     // return response
 
     // Get the current tab
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     const tab = tabs[0];
-    const execution = await chrome.scripting.executeScript({
+    const execution = await browser.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => ({ ...localStorage }),
     })
-    return execution[0].result
+    return execution[0].result;
 }
 
 function parseRecursive(raw, depth) {
@@ -310,6 +308,7 @@ function insertStats(node, lastUpdated) {
     const statsNode = document.querySelector("#stats")
     if (statsNode) {
         statsNode.innerHTML = `<b>Time</b> ${lastUpdated}<br/>`
+        statsNode.innerHTML += `<b>Items</b> ${Object.keys(node.children).length}<br/>`
     }
 }
 
