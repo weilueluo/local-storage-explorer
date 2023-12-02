@@ -28,17 +28,11 @@
         <input id="depth_input" type="number" />
       </div>
     </div>
-    <div class="links">
-      <a href="https://www.buymeacoffee.com/luoweilue" target="_blank">Buy me a coffee</a>
-      <div class="links_inner">
-        <a href="https://github.com/weilueluo/local-storage-explorer" target="_blank">Github</a>
-        <a href="https://github.com/weilueluo/local-storage-explorer/issues/new" target="_blank">Feedback</a>
-      </div>
-    </div>
+    <div id="close_div"><button id="close_button">Close</button></div>
   </div>
 
   <div id="search_div">
-    <input type="text" id="search_input" placeholder="Type anywhere to search..." />
+    <input type="text" id="search_input" placeholder="Type here to search..." />
     <button id="search_button">
       Search
       <svg class="spinner" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
@@ -61,17 +55,43 @@
       d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
   </svg>
 
-  <span id="stats"></span>
-
   <!-- empty label -->
   <span id="empty_label" class="display_none"><i>empty</i></span>
+
+  <div id="content">
+    <!-- request permission div -->
+    <div id="access_div">
+      <span id="access_text">No permission to access this page</span>
+      <button id="access_button">
+        Allow Access
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+          <path fill="currentColor" stroke="currentColor"
+            d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+        </svg>
+      </button>
+      <span id="access_hint"></span>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div id="footer">
+    <div id="footer_container">
+      <div id="stats"></div>
+      <div id="links">
+        <a href="https://www.buymeacoffee.com/luoweilue" target="_blank">Sponsor</a>
+        <a href="https://github.com/weilueluo/local-storage-explorer" target="_blank">Github</a>
+        <a href="https://github.com/weilueluo/local-storage-explorer/issues/new" target="_blank">Feedback</a>
+      </div>
+    </div>
+  </div>
 
   <!-- template -->
   <template id="li_template">
     <li class="kv_li">
       <div class="kv_div">
         <!-- collpase button -->
-        <span class="visibility"></span>
+        <!-- <span class="visibility"></span> -->
+        <!-- <img class="down_right display_none" src="../icons/right-down.png" alt=""> -->
         <!-- object key -->
         <span class="key trim">[Title]</span>
         <!-- object value -->
