@@ -1,7 +1,12 @@
 # Local Storage Explorer
-> Status: waiting for Chrome & Firefox review...
 
 Easily view, copy or search local storage content from any webpage by clicking on the extension icon. It also supports automatically deserialize json string.
+
+## Install
+### Chrome
+https://chromewebstore.google.com/detail/local-storage-explorer/ihbcgmgbibicnkinndgpnmphahijahio
+### Firefox
+https://addons.mozilla.org/en-GB/firefox/addon/localstorage-explorer/
 
 ## Usage
 Local storage maintains a separate storage area for each given origin, data persists even when the browser is closed and reopened. It gets cleared only through JavaScript, or clearing the Browser cache / Locally Stored Data. It is a JSON object. For more information about local storage, see https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
