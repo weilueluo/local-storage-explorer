@@ -1,4 +1,5 @@
 # Local Storage Explorer
+> ![NOTE] This repo is deprecated, it is moved to here: https://github.com/weilueluo/storage-explorer
 
 Easily view, copy or search local storage content from any webpage by clicking on the extension icon. It also supports automatically deserialize json string.
 
